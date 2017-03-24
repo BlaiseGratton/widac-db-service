@@ -18,7 +18,7 @@ def check_credentials(**kwargs):
 
 class Sample(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    composite_key = db.Column(db.String, primary_key=True)
+    composite_key = db.Column(db.String)
     area_easting = db.Column(db.Integer)
     area_northing = db.Column(db.Integer)
     context_number = db.Column(db.Integer)
