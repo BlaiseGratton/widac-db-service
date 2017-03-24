@@ -17,7 +17,7 @@ def check_credentials(**kwargs):
         raise flask_restless.ProcessingException(code=401)
 
 class Sample(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     composite_key = db.Column(db.String)
     area_easting = db.Column(db.Integer)
     area_northing = db.Column(db.Integer)
@@ -47,7 +47,7 @@ manager = flask_restless.APIManager(app, flask_sqlalchemy_db=db)
 manager.create_api(Sample, 
 	methods=['GET', 'POST', 'DELETE'], 
 	url_prefix='/widac/api/v1.0', 
-	preprocessors={'POST': [check_credentials],'DELETE': [check_credentials],})
+	preprocessors={'POST': [check_credentials],'DELETE': [check_credentials]})
 
 # start the flask loop
 # app.run()
