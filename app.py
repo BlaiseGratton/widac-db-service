@@ -2,6 +2,7 @@ import flask_restless
 
 from flask import Flask, jsonify, abort, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_heroku import Heroku
 
 app = Flask(__name__)
 heroku = Heroku(app)
