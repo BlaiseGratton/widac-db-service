@@ -86,6 +86,19 @@ class SingleSample(Resource):
     #     return jsonify({"message": "Sample updated","sample": sample_schema.dump(sample)})
 
 
+class SampleViaEastingNorthing(Resource):
+
+    def get(self, area_easting, area_northing):
+        sample = (Sample.query
+            .filter(area_easting=area_easting)
+            .filter(area_northing=area_northing)
+            )
+        if not sample:
+            return {"message": "Sample with given area_easting and area_northing could not be found"}, 400
+        sample_result = sample_schema.dump(sample)
+        return jsonify({'sample': sample_result.data})
+
+
 # SampleList
 # shows a list of all todos, and lets you POST to add new tasks
 class SampleList(Resource):
@@ -119,6 +132,7 @@ class SampleList(Resource):
 # Actually setup the Api resource routing here
 api.add_resource(SampleList, '/widac/api/v1.0/samples')
 api.add_resource(SingleSample, '/widac/api/v1.0/samples/<sample_composite_key>')
+api.add_resource(SampleViaEastingNorthing, '/widac/api/v1.0/samples/<area_easting>/<area_northing>')
 
 
 if __name__ == '__main__':
