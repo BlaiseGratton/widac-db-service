@@ -5,6 +5,10 @@ from flask_marshmallow import Marshmallow
 from flask_heroku import Heroku
 
 app = Flask(__name__)
+
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
+
 # heroku = Heroku(app)
 api = Api(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/demo'
