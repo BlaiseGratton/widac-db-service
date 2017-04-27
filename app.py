@@ -144,11 +144,9 @@ class SampleList(Resource):
             return jsonify({"message": "Created new sample.","sample": sample_schema.dump(sample)})
         return jsonify({"message": "Sample already exists.","sample": sample_schema.dump(existing_sample)})
 
-
 # Actually setup the Api resource routing here
 api.add_resource(SampleList, '/widac/api/v1.0/samples')
 api.add_resource(SingleSample, '/widac/api/v1.0/samples/<sample_composite_key>')
-
 
 if __name__ == '__main__':
     app.run(debug=True)
