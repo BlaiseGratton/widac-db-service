@@ -92,7 +92,6 @@ class SingleSample(Resource):
     #     db.session.commit()
     #     return jsonify({"message": "Sample updated","sample": sample_schema.dump(sample)})
 
-
 # SampleList
 # shows a list of all todos, and lets you POST to add new tasks
 class SampleList(Resource):
