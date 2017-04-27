@@ -14,7 +14,7 @@ app.logger.setLevel(logging.ERROR)
 
 # heroku = Heroku(app)
 api = Api(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/demo'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/demo'
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
