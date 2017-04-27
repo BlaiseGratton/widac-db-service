@@ -79,7 +79,7 @@ class SingleSample(Resource):
     # def put(self, sample_composite_key):
     #     json_data = request.get_json()
     #     if not json_data:
-    #         return jsonify({'message': 'No input data provided'}), 400
+    #         return jsonify({'message': 'No input json data provided'}), 400
     #     data, errors = sample_schema.load(json_data, 
     #         instance=Sample().query.filter_by(composite_key=composite_key).first(), partial=True)
     #     if errors:
@@ -98,7 +98,29 @@ class SingleSample(Resource):
 class SampleList(Resource):
 
     def get(self):
-        samples = Sample.query.all()
+        args = request.args
+        area_easting = args.get("area_easting")
+        area_northing = args.get("area_northing")
+        context_number = args.get("context_number")
+        sample_number = args.get("sample_number")
+
+        if area_easting and area_northing and context_number and sample_number:
+            samples = Sample.query.filter_by(area_easting=area_easting, area_northing=area_northing, 
+                context_number=context_number, sample_number=sample_number)
+            result = samples_schema.dump(samples)
+        elif area_easting and area_northing and context_number:
+            samples = Sample.query.filter_by(area_easting=area_easting, area_northing=area_northing, 
+                context_number=context_number)
+            result = samples_schema.dump(samples)
+        elif area_easting and area_northing:
+            samples = Sample.query.filter_by(area_easting=area_easting, area_northing=area_northing)
+            result = samples_schema.dump(samples)
+        elif area_easting:
+            samples = Sample.query.filter_by(area_easting=area_easting)
+            result = samples_schema.dump(samples)
+        else:
+            samples = Sample.query.all()
+        
         # Serialize the queryset
         result = samples_schema.dump(samples)
         return jsonify({'samples': result.data})
@@ -106,7 +128,7 @@ class SampleList(Resource):
     def post(self):
         json_data = request.get_json()
         if not json_data:
-            return jsonify({'message': 'No input data provided'}), 400
+            return jsonify({'message': 'No json input data provided'}), 400
 
         # Validate and deserialize input
         sample, errors = sample_schema.load(json_data)
