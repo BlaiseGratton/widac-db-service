@@ -65,7 +65,7 @@ class SingleSample(Resource):
         if not sample:
             return {"message": "Sample with given composite number could not be found"}, 400
         sample_result = sample_schema.dump(sample)
-        return jsonify({'sample': sample_result.data})
+        return jsonify(sample_result.data)
 
     def delete(self, sample_composite_key):
         sample = Sample.query.filter_by(composite_key=sample_composite_key).first()
@@ -104,6 +104,8 @@ class SampleList(Resource):
         context_number = args.get("context_number")
         sample_number = args.get("sample_number")
 
+        # extremely inefficient way to determine what parameters have been provided
+        # refactor to use reqparse or similar library
         if area_easting and area_northing and context_number and sample_number:
             samples = Sample.query.filter_by(area_easting=area_easting, area_northing=area_northing, 
                 context_number=context_number, sample_number=sample_number)
