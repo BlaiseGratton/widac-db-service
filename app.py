@@ -76,51 +76,17 @@ class SingleSample(Resource):
         db.session.commit()    
         return {'result': True}
 
-    # def put(self, sample_composite_key):
-    #     json_data = request.get_json()
-    #     if not json_data:
-    #         return jsonify({'message': 'No input json data provided'}), 400
-    #     data, errors = sample_schema.load(json_data, 
-    #         instance=Sample().query.filter_by(composite_key=composite_key).first(), partial=True)
-    #     if errors:
-    #         return jsonify(errors), 422
-
-    #     sample = Sample.query.filter_by(composite_key=sample_composite_key).first()
-    #     if not sample:
-    #         return {"message": "Sample with given composite number could not be found"}, 400
-    #     sample.update(data)
-    #     db.session.commit()
-    #     return jsonify({"message": "Sample updated","sample": sample_schema.dump(sample)})
 
 # SampleList
-# shows a list of all todos, and lets you POST to add new tasks
+# shows a list of all samples, and lets you POST to add new samples
 class SampleList(Resource):
 
     def get(self):
         args = request.args
-        area_easting = args.get("area_easting")
-        area_northing = args.get("area_northing")
-        context_number = args.get("context_number")
-        sample_number = args.get("sample_number")
-
-        # extremely inefficient way to determine what parameters have been provided
-        # refactor to use reqparse or similar library
-        if area_easting and area_northing and context_number and sample_number:
-            samples = Sample.query.filter_by(area_easting=area_easting, area_northing=area_northing, 
-                context_number=context_number, sample_number=sample_number)
-            result = samples_schema.dump(samples)
-        elif area_easting and area_northing and context_number:
-            samples = Sample.query.filter_by(area_easting=area_easting, area_northing=area_northing, 
-                context_number=context_number)
-            result = samples_schema.dump(samples)
-        elif area_easting and area_northing:
-            samples = Sample.query.filter_by(area_easting=area_easting, area_northing=area_northing)
-            result = samples_schema.dump(samples)
-        elif area_easting:
-            samples = Sample.query.filter_by(area_easting=area_easting)
-            result = samples_schema.dump(samples)
-        else:
-            samples = Sample.query.all()
+        type_corrected_args = {}
+        for key in args:
+            type_corrected_args[key] = args.get(key)
+        samples = Sample.query.filter_by(**type_corrected_args)
         
         # Serialize the queryset
         result = samples_schema.dump(samples)
@@ -144,9 +110,11 @@ class SampleList(Resource):
             return jsonify({"message": "Created new sample.","sample": sample_schema.dump(sample)})
         return jsonify({"message": "Sample already exists.","sample": sample_schema.dump(existing_sample)})
 
+
 # Actually setup the Api resource routing here
 api.add_resource(SampleList, '/widac/api/v1.0/samples')
 api.add_resource(SingleSample, '/widac/api/v1.0/samples/<sample_composite_key>')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
