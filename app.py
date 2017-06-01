@@ -4,17 +4,23 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_heroku import Heroku
 
-import sys
 import logging
+import os
+import sys
+
+
+IS_LOCAL = 'HEROKU' not in os.environ
 
 app = Flask(__name__)
-
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
 app.logger.setLevel(logging.ERROR)
 
-heroku = Heroku(app)
+if IS_LOCAL:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/demo'
+else:
+    heroku = Heroku(app)
+
 api = Api(app)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/demo'
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
@@ -117,4 +123,5 @@ api.add_resource(SingleSample, '/widac/api/v1.0/samples/<sample_composite_key>')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=IS_LOCAL)
+
